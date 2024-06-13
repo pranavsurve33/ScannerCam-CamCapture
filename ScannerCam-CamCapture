@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scanner Cam Generator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Scanner Cam Generator</h1>
+        <video id="video" autoplay></video>
+        <button id="capture">Capture</button>
+        <canvas id="canvas"></canvas>
+        <img id="snapshot" alt="Captured image will appear here">
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+<style class="css">/* styles.css */
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background-color: #f0f0f0;
+    }
+    
+    .container {
+        text-align: center;
+    }
+    
+    video, canvas {
+        display: block;
+        margin: 10px auto;
+        border: 2px solid #000;
+    }
+    
+    button {
+        display: block;
+        margin: 20px auto;
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+    
+    img {
+        display: block;
+        margin: 20px auto;
+        max-width: 100%;
+        border: 2px solid #000;
+    }
+    </style>
+    <script class="js">// script.js
+        document.addEventListener("DOMContentLoaded", function() {
+            const video = document.getElementById('video');
+            const canvas = document.getElementById('canvas');
+            const captureButton = document.getElementById('capture');
+            const snapshot = document.getElementById('snapshot');
+            const constraints = { video: true };
+        
+            // Access the webcam stream
+            navigator.mediaDevices.getUserMedia(constraints)
+                .then((stream) => {
+                    video.srcObject = stream;
+                })
+                .catch((err) => {
+                    console.error('Error accessing the webcam: ', err);
+                });
+        
+            captureButton.addEventListener('click', () => {
+                // Set canvas dimensions to the video dimensions
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                
+                // Draw the current video frame onto the canvas
+                const context = canvas.getContext('2d');
+                context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                
+                // Convert the canvas image to a data URL and display it
+                const dataUrl = canvas.toDataURL('image/png');
+                snapshot.src = dataUrl;
+            });
+        });
+        </script>
